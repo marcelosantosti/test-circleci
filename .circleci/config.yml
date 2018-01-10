@@ -5,6 +5,7 @@
 version: 2
 machine:
   environment:
+    ANDROID_TARGET: android-26
     ANDROID_HOME: /usr/local/android-sdk-linux
 jobs:
   build:
