@@ -21,7 +21,7 @@ references:
 
 jobs:
   build:
-    <<: *android_config
+    #<<: *android_config
     steps:
 #      - *default_steps
       - run:
@@ -40,7 +40,7 @@ jobs:
         name: Store Lib Test Result
         path: testlibrary/build/test-results
   deploy:
-    <<: *android_config
+    #<<: *android_config
     steps:
 #      - *default_steps
       - run:
