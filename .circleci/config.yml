@@ -39,18 +39,17 @@ jobs:
           name: Store Lib Test Result
           path: testlibrary/build/test-results
   test:
-      #working_directory: ~/code
-#      docker:
-#        - image: circleci/android:api-27-alpha
-#      environment:
-#        JVM_OPTS: -Xmx3200m
-      override:
-        # start the emulator
-        - emulator -avd circleci-android24 -no-window:
-            background: true
-            parallel: true
-        # wait for it to have booted
-        - circle-android wait-for-boot
+      working_directory: ~/code
+      docker:
+        - image: circleci/android:api-27-alpha
+      environment:
+        JVM_OPTS: -Xmx3200m
+    pre:
+      - emulator -avd circleci-android24 -no-window:
+        background: true
+        parallel: true
+      - circle-android wait-for-boo
+    steps:
         # run tests  against the emulator.
         - ./gradlew connectedAndroidTest
         # copy the build outputs to artifacts
