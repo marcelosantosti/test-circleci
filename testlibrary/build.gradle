@@ -22,6 +22,28 @@ android {
         }
     }
 
+
+}
+
+allprojects {
+    tasks.withType(Test) {
+        testLogging {
+            exceptionFormat "full"
+            showCauses true
+            showExceptions true
+            showStackTraces true
+            showStandardStreams true
+            events = ["passed", "skipped", "failed", "standardOut", "standardError"]
+        }
+    }
+}
+
+gradle.projectsEvaluated {
+    tasks.withType(Test) { task ->
+        task.afterTest { desc, result ->
+            println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+        }
+    }
 }
 
 dependencies {
