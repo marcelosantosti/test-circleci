@@ -10,29 +10,30 @@ references:
   default_steps: &default_steps
     - checkout
     - restore_cache:
-      key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
     - run:
-      name: Download Dependencies
-      command: ./gradlew androidDependencies
+        name: Download Dependencies
+        command: ./gradlew androidDependencies
     - save_cache:
-      paths:
-        - ~/.gradle
-      key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+        paths:
+          - ~/.gradle
+        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
 
 jobs:
   build:
     <<: *android_config
     steps:
-      - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+#      - checkout
+#      - restore_cache:
+#          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+#      - run:
+#          name: Download Dependencies
+#          command: ./gradlew androidDependencies
+#      - save_cache:
+#          paths:
+#            - ~/.gradle
+#          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      <<: *default_steps
       - run:
           name: Run Unit Tests
           command: ./gradlew lint test
