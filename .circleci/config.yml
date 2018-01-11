@@ -27,27 +27,27 @@ jobs:
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-        name: Download Dependencies
-        command: ./gradlew androidDependencies
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
       - save_cache:
-        paths:
-          - ~/.gradle
-        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-        name: Run Unit Tests
-        command: ./gradlew lint test
+          name: Run Unit Tests
+          command: ./gradlew lint test
       - run:
-        name: Release App
-        command: ./gradlew assembleRelease
+          name: Release App
+          command: ./gradlew assembleRelease
       - store_artifacts:
-        path: app/build/reports
-        destination: reports
+          path: app/build/reports
+          destination: reports
       - store_test_results:
-        name: Store App Test Result
-        path: app/build/test-results
+          name: Store App Test Result
+          path: app/build/test-results
       - store_test_results:
-        name: Store Lib Test Result
-        path: testlibrary/build/test-results
+          name: Store Lib Test Result
+          path: testlibrary/build/test-results
 #  deploy:
 #    <<: *android_config
 #    steps:
