@@ -39,8 +39,7 @@ jobs:
           name: Store Lib Test Result
           path: testlibrary/build/test-results
   test:
-    steps:
-      override:
+      steps:
         # start the emulator
         - emulator -avd circleci-android24 -no-window:
             background: true
