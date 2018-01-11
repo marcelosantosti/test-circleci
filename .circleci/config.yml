@@ -42,6 +42,7 @@ jobs:
   deploy:
     <<: *android_config
     steps:
+      - *default_steps
       - run:
         name: Generate Library JAr and Zip
         command: ./gradlew jarrelease ziprelease
