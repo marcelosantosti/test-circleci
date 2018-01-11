@@ -1,40 +1,59 @@
 version: 2
-jobs:
-  build:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-27-alpha
-    environment:
-      JVM_OPTS: -Xmx3200m
-    steps:
-      - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
+
+references:
+    android_config: &android_config
+        working_directory: ~/code
+        docker:
+            - image: circleci/android:api-27-alpha
+        environment:
+            JVM_OPTS: -Xmx3200m
+    default_steps: &default_steps
+        - checkout
+        - restore_cache:
+            key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+        - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
-      - save_cache:
+        - save_cache:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Run Unit Tests
-          command: ./gradlew lint test
-      - run:
-          name: Release App
-          command: ./gradlew assembleRelease
-      - run:
-          name: Generate Library Zip
-          command: ./gradlew jarrelease ziprelease
-      - store_artifacts:
-          path: app/build/reports
-          destination: reports
-      - store_artifacts:
-          path: testlibrary/build/zips
-          destination: zips
-      - store_test_results:
-          name: Store App Test Result
-          path: app/build/test-results
-      - store_test_results:
-          name: Store Lib Test Result
-          path: testlibrary/build/test-results
+
+jobs:
+    build:
+        <<: *android_config
+        steps:
+            - *default_steps
+            - run:
+                name: Run Unit Tests
+                command: ./gradlew lint test
+            - run:
+                name: Release App
+                command: ./gradlew assembleRelease
+            - store_artifacts:
+                path: app/build/reports
+                destination: reports
+            - store_test_results:
+                name: Store App Test Result
+                path: app/build/test-results
+            - store_test_results:
+                name: Store Lib Test Result
+                path: testlibrary/build/test-results
+    deploy:
+        <<: *android_config
+        steps:
+            - run:
+                name: Generate Library Zip
+                command: ./gradlew jarrelease ziprelease
+            - store_artifacts:
+                path: testlibrary/build/zips
+                destination: zips
+
+workflows:
+    version: 2
+    workflow:
+        jobs:
+            - build
+            - deploy:
+                requires:
+                    build
