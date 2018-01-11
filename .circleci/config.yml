@@ -41,13 +41,13 @@ jobs:
         path: testlibrary/build/test-results
   deploy:
     <<: *android_config
-      steps:
-        - run:
-          name: Generate Library JAr and Zip
-          command: ./gradlew jarrelease ziprelease
-        - store_artifacts:
-          path: testlibrary/build/zips
-          destination: zips
+    steps:
+      - run:
+        name: Generate Library JAr and Zip
+        command: ./gradlew jarrelease ziprelease
+      - store_artifacts:
+        path: testlibrary/build/zips
+        destination: zips
 
 workflows:
   version: 2
