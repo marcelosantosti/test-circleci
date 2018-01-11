@@ -1,0 +1,113 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+
+
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}
+
+android.libraryVariants.all { variant ->
+    task("jar${variant.name}", type: Jar) {
+        description "Bundles compiled .class files into a JAR file for $Variant.name."
+
+        outputs.upToDateWhen { return false }
+
+        //noinspection GroovyAssignabilityCheck
+        dependsOn variant.javaCompile
+
+        //noinspection GroovyAssignabilityCheck
+        from variant.javaCompile.destinationDir
+
+        baseName = "${project.name}-${variant.name}-${android.defaultConfig.versionName}"
+
+        from {
+            configurations.compile.collect {
+                it.isDirectory() ? it : zipTree(it)
+            }
+        } {
+            exclude 'R.txt'
+            exclude '**/R.html'
+            exclude '**/R.*.html'
+            exclude 'res*'
+            exclude 'aapt*'
+            exclude 'AndroidManifest.xml'
+        }
+
+        doLast {
+            println 'Generated lib file.'
+        }
+    }
+
+    task ("zip${variant.name}", type:Zip, overwrite: true) {
+
+        new File("${buildDir.getPath()}/zips").mkdirs()
+
+        from "${buildDir.getPath()}/libs"
+        include '*.jar'
+        exclude '*-debug-*'
+        into '' // note that this specifies path *in* the archive
+        destinationDir file("${buildDir.getPath()}/zips") // directory that you want your archive to be placed in
+        archiveName "library.zip"
+
+        doLast {
+            println 'Zip generated.'
+        }
+    }
+}
+
+apply plugin: "jp.classmethod.aws.s3"
+def myBucketName = 'connected-builds'
+
+import com.amazonaws.services.s3.model.ObjectMetadata
+
+import jp.classmethod.aws.gradle.s3.AmazonS3FileUploadTask
+
+aws {
+    profileName = 'default'
+}
+
+task uploadContent(type: AmazonS3FileUploadTask) {
+    file file("build/zips/library.zip") // must be a file
+    bucketName myBucketName
+    key "library.zip"
+
+    def m = new ObjectMetadata()
+    m.setCacheControl("no-cache, no-store")
+    objectMetadata = m
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:26.+'
+    testCompile 'junit:junit:4.12'
+}
