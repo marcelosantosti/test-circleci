@@ -9,12 +9,12 @@ references:
       JVM_OPTS: -Xmx3200m
   default_steps: &default_steps
     - checkout
-    - restore_cache:
+    - restore_cache: &restore_cache
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-    - run:
+    - run: &download_dependencies
         name: Download Dependencies
         command: ./gradlew androidDependencies
-    - save_cache:
+    - save_cache: &save_chave
         paths:
           - ~/.gradle
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
@@ -33,7 +33,10 @@ jobs:
 #          paths:
 #            - ~/.gradle
 #          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - *default_steps
+      - checkout
+      - *restore_cache
+      - *download_dependencies
+      - *save_chave
       - run:
           name: Run Unit Tests
           command: ./gradlew lint test
