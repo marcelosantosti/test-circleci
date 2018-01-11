@@ -54,8 +54,8 @@ jobs:
     steps:
         # run tests  against the emulator.
       - checkout
-        - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - restore_cache:
+        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
         name: Download Dependencies
         command: ./gradlew androidDependencies
