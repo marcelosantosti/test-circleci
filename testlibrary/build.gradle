@@ -41,13 +41,13 @@ allprojects {
     }
 }
 
-gradle.projectsEvaluated {
-    tasks.withType(Test) { task ->
-        task.afterTest { desc, result ->
-            println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
-        }
-    }
-}
+//gradle.projectsEvaluated {
+//    tasks.withType(Test) { task ->
+//        task.afterTest { desc, result ->
+//            println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+//        }
+//    }
+//}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

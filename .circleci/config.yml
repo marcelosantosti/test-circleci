@@ -18,7 +18,7 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Run Tests
+          name: Run Unit Tests
           command: ./gradlew lint test
       - run:
           name: Release App
@@ -33,4 +33,8 @@ jobs:
           path: testlibrary/build/zips
           destination: zips
       - store_test_results:
+          name: Store App Test Result
           path: app/build/test-results
+      - store_test_results:
+          name: Store Lib Test Result
+          path: testlibrary/build/test-results
