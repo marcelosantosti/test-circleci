@@ -39,11 +39,11 @@ jobs:
           name: Store Lib Test Result
           path: testlibrary/build/test-results
   test:
-      working_directory: ~/code
-      docker:
-        - image: circleci/android:api-27-alpha
-      environment:
-        JVM_OPTS: -Xmx3200m
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-27-alpha
+    environment:
+      JVM_OPTS: -Xmx3200m
     pre:
       - emulator -avd circleci-android24 -no-window:
         background: true
@@ -51,11 +51,11 @@ jobs:
       - circle-android wait-for-boo
     steps:
         # run tests  against the emulator.
-        - ./gradlew connectedAndroidTest
+      - ./gradlew connectedAndroidTest
         # copy the build outputs to artifacts
-        - cp -r my-project/build/outputs $CIRCLE_ARTIFACTS
+      - cp -r my-project/build/outputs $CIRCLE_ARTIFACTS
         # copy the test results to the test results directory.
-        - cp -r my-project/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+      - cp -r my-project/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
 
 workflows:
   version: 2
