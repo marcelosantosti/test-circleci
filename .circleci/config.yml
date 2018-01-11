@@ -44,13 +44,6 @@ jobs:
       - image: circleci/android:api-27-alpha
     environment:
       JVM_OPTS: -Xmx3200m
-    pre:
-      - emulator -avd circleci-android24 -no-window:
-        background: true
-        parallel: true
-      - circle-android wait-for-boot
-      - sleep 30
-      - adb shell input keyevent 82
     steps:
         # run tests  against the emulator.
       - checkout
@@ -63,6 +56,12 @@ jobs:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - emulator -avd circleci-android24 -no-window:
+        background: true
+        parallel: true
+      - circle-android wait-for-boot
+      - sleep 30
+      - adb shell input keyevent 82
       - run:
           name: Test
           command: ./gradlew connectedAndroidTest --info
