@@ -9,12 +9,12 @@ references:
       JVM_OPTS: -Xmx3200m
   default_steps: &default_steps
     - checkout
-    - restore_cache: &restore_cache
+    - restore_gradle_cache: &restore_gradle_cache
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
     - run: &download_dependencies
         name: Download Dependencies
         command: ./gradlew androidDependencies
-    - save_cache: &save_chave
+    - save_gradle_cache: &save_gradle_cache
         paths:
           - ~/.gradle
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
@@ -24,8 +24,9 @@ jobs:
     <<: *android_config
     steps:
       - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+#      - restore_cache:
+#          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - *restore_gradle_cache
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
@@ -58,13 +59,6 @@ jobs:
       - checkout
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-#      - run:
-#          name: Download Dependencies
-#          command: ./gradlew androidDependencies
-#      - save_cache:
-#          paths:
-#            - ~/.gradle
-#          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Generate Library JAr and Zip
           command: ./gradlew jarrelease ziprelease
