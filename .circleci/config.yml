@@ -86,7 +86,7 @@ jobs:
   instrumentation_test:
     <<: *gcloud_config
     steps:
-      - attach_instrumentation_test
+      - *attach_instrumentation_test
   deploy:
     <<: *android_config
     steps:
