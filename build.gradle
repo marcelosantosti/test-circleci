@@ -18,6 +18,22 @@ buildscript {
     }
 }
 
+import org.ajoberstar.grgit.Credentials
+
+ext {
+//    try {
+        // Open the Git repository in the current directory.
+        grgit = org.ajoberstar.grgit.Grgit.open()
+
+        // Get commit id of HEAD.
+        revision = grgit.head().id
+        // Alternative is using abbreviatedId of head() method.
+        // revision = git.head().abbreviatedId
+//    } catch (Exception e) {
+//        //grgit not available
+//    }
+}
+
 allprojects {
     repositories {
         google()
