@@ -135,6 +135,9 @@ jobs:
       - checkout
       - *restore_gradle_cache
       - *attach_lib_artifacts
+      - add_ssh_keys:
+            fingerprints:
+              - "1a:4d:5a:8a:29:b6:18:02:d5:d6:42:7d:05:07:27:ee"
       - run:
           name: Permission to Execute File
           command: chmod -R 777 ./deploy_to_git.sh
