@@ -3,7 +3,7 @@ version: 2
 references:
   #android configuration
   android_config: &android_config
-    working_directory: ~/code
+    working_directory: *workspace
     docker:
       - image: circleci/android:api-27-alpha
     environment:
