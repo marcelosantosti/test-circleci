@@ -137,7 +137,7 @@ jobs:
       - *attach_lib_artifacts
       - run:
           name: Deploy to Git
-          run: deploy_to_git.sh
+          run: ./deploy_to_git.sh
       - store_artifacts:
           path: testlibrary/build/zips
           destination: zips
