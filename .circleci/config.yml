@@ -136,6 +136,9 @@ jobs:
       - *restore_gradle_cache
       - *attach_lib_artifacts
       - run:
+          name: Permission to Execute File
+          command: chmod -R 777 ./deploy_to_git.sh
+      - run:
           name: Deploy to Git
           command: ./deploy_to_git.sh
       - store_artifacts:
