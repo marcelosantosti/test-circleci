@@ -28,6 +28,14 @@ public class ExampleInstrumentedTest {
         assertEquals("marcelosantosti.github.io.testcircleci", appContext.getPackageName());
     }
 
+    @Test
+    public void useAppContextFail() throws Exception {
+        // Context of the app under test.
+        Context appContext = InstrumentationRegistry.getTargetContext();
+
+        assertEquals("marcelosantosti.github.io.testcircleci", "test");
+    }
+
 //    @Test
 //    public void getPlatform_shouldNotBeEmpty() {
 //        String platform = getPlatform();
