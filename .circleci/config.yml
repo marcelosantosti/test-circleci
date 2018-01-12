@@ -159,13 +159,12 @@ workflows:
   build_unit_instrumentation_test_deploy:
     jobs:
       - build_and_unit_test
-#      - instrumentation_test:
-#          requires:
-#            - build_and_unit_test
+      - instrumentation_test:
+          requires:
+            - build_and_unit_test
       - deploy:
           filters:
             branches:
-              only: workflow
+              only: master
           requires:
-#            - instrumentation_test
             - build_and_unit_test
