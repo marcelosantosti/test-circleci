@@ -137,7 +137,7 @@ jobs:
       - *attach_lib_artifacts
       - run:
           name: Deploy to Git
-          run: ./deploy_to_git.sh
+          command: ./deploy_to_git.sh
       - store_artifacts:
           path: testlibrary/build/zips
           destination: zips
@@ -150,12 +150,13 @@ workflows:
   build_unit_instrumentation_test_deploy:
     jobs:
       - build_and_unit_test
-      - instrumentation_test:
-          requires:
-            - build_and_unit_test
+#      - instrumentation_test:
+#          requires:
+#            - build_and_unit_test
       - deploy:
           filters:
             branches:
               only: workflow
           requires:
-            - instrumentation_test
+#            - instrumentation_test
+            - build_and_unit_test
