@@ -1,6 +1,8 @@
 version: 2
 
 references:
+  workspace: &workspace
+      ~/workspace
   #android configuration
   android_config: &android_config
     working_directory: *workspace
@@ -20,8 +22,6 @@ references:
             paths:
               - ~/.gradle
             key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-  workspace: &workspace
-      ~/workspace
   persist_lib_artifacts: &persist_lib_artifacts
       persist_to_workspace:
           root: *workspace
