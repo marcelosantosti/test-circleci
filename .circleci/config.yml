@@ -58,8 +58,7 @@ jobs:
     <<: *android_config
     steps:
       - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - *restore_gradle_cache
       - run:
           name: Generate Library JAr and Zip
           command: ./gradlew jarrelease ziprelease
