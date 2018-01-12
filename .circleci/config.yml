@@ -31,10 +31,6 @@ jobs:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - *save_gradle_cache
-#      - checkout
-#      - *restore_cache
-#      - *download_dependencies
-#      - *save_chave
       - run:
           name: Run Unit Tests
           command: ./gradlew lint test
@@ -56,8 +52,11 @@ jobs:
       - checkout
       - *restore_gradle_cache
       - run:
-          name: Generate Library JAr and Zip
-          command: ./gradlew jarrelease ziprelease
+          name: Generate Library Generate
+          command: ./gradlew jarrelease
+      - run:
+          name: Generate Zip
+          command: ./gradlew ziprelease
       - store_artifacts:
           path: testlibrary/build/zips
           destination: zips
