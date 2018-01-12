@@ -1,6 +1,7 @@
 version: 2
 
 references:
+  #android configuration
   android_config: &android_config
     working_directory: ~/code
     docker:
@@ -8,7 +9,6 @@ references:
     environment:
       JVM_OPTS: -Xmx3200m
   default_steps: &default_steps
-    - checkout
     - restore_gradle_cache: &restore_gradle_cache
         restore_cache:
             key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
@@ -20,6 +20,17 @@ references:
             paths:
               - ~/.gradle
             key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+  workspace: &workspace
+      ~/workspace
+  persist_lib_artifacts: &persist_lib_artifacts
+      persist_to_workspace:
+          root: *workspace
+          paths:
+            - testlibrary/build/libs
+            - testlibrary/build/zips
+  attach_lib_artifacts: &attach_lib_artifacts
+      attach_workspace:
+          at: *workspace
 
 jobs:
   build_and_unit_test:
@@ -37,6 +48,13 @@ jobs:
       - run:
           name: Release App
           command: ./gradlew assembleRelease
+      - run:
+          name: Generate Library
+          command: ./gradlew jarrelease
+      - run:
+          name: Generate Zip
+          command: ./gradlew ziprelease
+      - *persist_lib_artifacts
       - store_artifacts:
           path: app/build/reports
           destination: reports
@@ -51,12 +69,7 @@ jobs:
     steps:
       - checkout
       - *restore_gradle_cache
-      - run:
-          name: Generate Library Generate
-          command: ./gradlew jarrelease
-      - run:
-          name: Generate Zip
-          command: ./gradlew ziprelease
+      - *attach_lib_artifacts
       - store_artifacts:
           path: testlibrary/build/zips
           destination: zips
