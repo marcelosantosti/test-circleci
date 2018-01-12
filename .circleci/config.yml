@@ -3,6 +3,7 @@ version: 2
 references:
   workspace: &workspace
       ~/workspace
+
   #android configuration
   android_config: &android_config
     working_directory: *workspace
@@ -10,6 +11,15 @@ references:
       - image: circleci/android:api-27-alpha
     environment:
       JVM_OPTS: -Xmx3200m
+
+  #gcloud config
+  gcloud_config: &gcloud_config
+    working_directory: *workspace
+    docker:
+      - image: google/cloud-sdk:latest
+    environment:
+      TERM: dumb
+
   default_steps: &default_steps
     - restore_gradle_cache: &restore_gradle_cache
         restore_cache:
@@ -31,6 +41,14 @@ references:
   attach_lib_artifacts: &attach_lib_artifacts
       attach_workspace:
           at: *workspace
+  persist_instrumentation_test: &persist_instrumentation_test
+      persist_to_workspace:
+          root: *workspace
+          paths:
+            - app/build/outputs/apks
+  attach_instrumentation_test: &attach_instrumentation_test
+      attach_workspace:
+          at: *workspace
 
 jobs:
   build_and_unit_test:
@@ -47,7 +65,7 @@ jobs:
           command: ./gradlew lint test
       - run:
           name: Release App
-          command: ./gradlew assembleRelease
+          command: ./gradlew assembleAndroidTest
       - run:
           name: Generate Library
           command: ./gradlew jarrelease
@@ -55,6 +73,7 @@ jobs:
           name: Generate Zip
           command: ./gradlew ziprelease
       - *persist_lib_artifacts
+      - *persist_instrumentation_test
       - store_artifacts:
           path: app/build/reports
           destination: reports
@@ -64,6 +83,10 @@ jobs:
       - store_test_results:
           name: Store Lib Test Result
           path: testlibrary/build/test-results
+  instrumentation_test:
+    <<: *android_config
+    steps:
+      - attach_instrumentation_test
   deploy:
     <<: *android_config
     steps:
@@ -76,9 +99,12 @@ jobs:
 
 workflows:
   version: 2
-  build_and_unit_deploy:
+  build_unit_instrumentation_test_deploy:
     jobs:
       - build_and_unit_test
-      - deploy:
+      - instrumentation_test:
           requires:
             - build_and_unit_test
+      - deploy:
+          requires:
+            - instrumentation_test
