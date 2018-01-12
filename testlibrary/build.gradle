@@ -63,6 +63,8 @@ android.libraryVariants.all { variant ->
     task("jar${variant.name}", type: Jar) {
         description "Bundles compiled .class files into a JAR file for $Variant.name."
 
+        println "Current Branch Name: ${grgit.branch.getCurrent().name}"
+
         outputs.upToDateWhen { return false }
 
         //noinspection GroovyAssignabilityCheck

@@ -14,6 +14,7 @@ buildscript {
         // in the individual module build.gradle files
 
         classpath "jp.classmethod.aws:gradle-aws-plugin:0.35"
+        classpath 'org.ajoberstar:grgit:2.1.0'
     }
 }
 
