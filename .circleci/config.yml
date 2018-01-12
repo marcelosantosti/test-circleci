@@ -23,20 +23,20 @@ jobs:
   build:
     <<: *android_config
     steps:
-#      - checkout
-#      - restore_cache:
-#          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-#      - run:
-#          name: Download Dependencies
-#          command: ./gradlew androidDependencies
-#      - save_cache:
-#          paths:
-#            - ~/.gradle
-#          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - checkout
-      - *restore_cache
-      - *download_dependencies
-      - *save_chave
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+#      - checkout
+#      - *restore_cache
+#      - *download_dependencies
+#      - *save_chave
       - run:
           name: Run Unit Tests
           command: ./gradlew lint test
@@ -52,22 +52,21 @@ jobs:
       - store_test_results:
           name: Store Lib Test Result
           path: testlibrary/build/test-results
-#  deploy:
-#    <<: *android_config
-#    steps:
-##      - *default_steps
-#      - run:
-#        name: Generate Library JAr and Zip
-#        command: ./gradlew jarrelease ziprelease
-#      - store_artifacts:
-#        path: testlibrary/build/zips
-#        destination: zips
+  deploy:
+    <<: *android_config
+    steps:
+      - run:
+        name: Generate Library JAr and Zip
+        command: ./gradlew jarrelease ziprelease
+      - store_artifacts:
+        path: testlibrary/build/zips
+        destination: zips
 
 workflows:
   version: 2
   build_test_deploy:
     jobs:
       - build
-#      - deploy:
-#        requires:
-#          - build
+      - deploy:
+        requires:
+          - build

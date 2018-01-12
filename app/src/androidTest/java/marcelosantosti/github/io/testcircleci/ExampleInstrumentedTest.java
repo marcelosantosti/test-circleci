@@ -1,12 +1,16 @@
 package marcelosantosti.github.io.testcircleci;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.lang.reflect.Field;
+
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.*;
 
 /**
@@ -23,4 +27,13 @@ public class ExampleInstrumentedTest {
 
         assertEquals("marcelosantosti.github.io.testcircleci", appContext.getPackageName());
     }
+
+//    @Test
+//    public void getPlatform_shouldNotBeEmpty() {
+//        String platform = getPlatform();
+//
+//        assertTrue(platform != "");
+//    }
+
+
 }
