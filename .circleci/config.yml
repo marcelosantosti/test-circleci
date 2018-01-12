@@ -135,9 +135,15 @@ jobs:
       - checkout
       - *restore_gradle_cache
       - *attach_lib_artifacts
+      - run:
+          name: Deploy to Git
+          run: deploy_to_git.sh
       - store_artifacts:
           path: testlibrary/build/zips
           destination: zips
+      - store_artifacts:
+          path: testlibrary/build/libs
+          destination: libs
 
 workflows:
   version: 2
@@ -148,5 +154,8 @@ workflows:
           requires:
             - build_and_unit_test
       - deploy:
+          filters:
+            branches:
+              only: workspace
           requires:
             - instrumentation_test
