@@ -56,17 +56,17 @@ jobs:
     <<: *android_config
     steps:
       - run:
-        name: Generate Library JAr and Zip
-        command: ./gradlew jarrelease ziprelease
+          name: Generate Library JAr and Zip
+          command: ./gradlew jarrelease ziprelease
       - store_artifacts:
-        path: testlibrary/build/zips
-        destination: zips
+          path: testlibrary/build/zips
+          destination: zips
 
 workflows:
   version: 2
   build_test_deploy:
-      jobs:
-          - build
-          - deploy:
-            requires:
-                - build
+    jobs:
+        - build
+        - deploy:
+          requires:
+            - build
