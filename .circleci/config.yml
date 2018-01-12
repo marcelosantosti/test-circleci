@@ -16,25 +16,21 @@ references:
         name: Download Dependencies
         command: ./gradlew androidDependencies
     - save_gradle_cache: &save_gradle_cache
-        paths:
-          - ~/.gradle
-        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+        save_cache:
+            paths:
+              - ~/.gradle
+            key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
 
 jobs:
   build_and_unit_test:
     <<: *android_config
     steps:
       - checkout
-#      - restore_cache:
-#          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - *restore_gradle_cache
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - *save_gradle_cache
 #      - checkout
 #      - *restore_cache
 #      - *download_dependencies
