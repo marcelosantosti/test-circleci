@@ -154,8 +154,8 @@ workflows:
           requires:
             - build_and_unit_test
       - deploy:
-          filters:
-            branches:
-              only: workspace
+#          filters:
+#            branches:
+#              only: workspace
           requires:
             - instrumentation_test
